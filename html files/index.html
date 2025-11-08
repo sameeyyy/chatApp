@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat App Layout</title>
+    <link rel="stylesheet" href="css folder/style.css" />
+    <link rel="stylesheet" href="../bootstrap/bootstrap.min.css" />
+  </head>
+  <body>
+    <div class="chat-container">
+      <!-- Left Sidebar -->
+      <div class="sidebar">
+        <div class="sidebar-header d-flex justify-content-between">
+          <h2>Chats</h2>
+          <button
+            class="btn btn-primary"
+            data-toggle="modal"
+            data-target="#exampleModal"
+          >
+            Add Receiver
+          </button>
+        </div>
+
+        <div class="chat-list"></div>
+      </div>
+
+      <!-- Right Chat Window -->
+      <div class="chat-window">
+        <div class="chat-header">
+          <div class="chat-header-info">
+            <img src="../image/brooklyn.jpg" alt="Profile" />
+            <h3 id="receiverChatName">Brooklyn</h3>
+          </div>
+        </div>
+
+        <div class="chat-messages">
+          <div class="message received">Hey, how are you?</div>
+          <div class="message sent">I’m good! You?</div>
+          <div class="message received">All good 😊</div>
+        </div>
+
+        <div class="chat-input">
+          <input type="text" placeholder="Type a message..." id="messageText"/>
+          <button id="sendBtn">Send</button>
+        </div>
+      </div>
+
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="exampleModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                Medicine Upload
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-6">
+                  <label for="">Enter Receiver</label>
+                  <input class="form-control" type="text" id="add_receiver" />
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="button" class="btn btn-primary" id="saveReceiver">
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../bootstrap/jquery-3.2.1.slim.min.js"></script>
+    <script src="../bootstrap/popper.min.js"></script>
+    <script src="../bootstrap/bootstrap.min.js"></script>
+    <script src="js/web_chat.js" type="module"></script>
+  </body>
+</html>

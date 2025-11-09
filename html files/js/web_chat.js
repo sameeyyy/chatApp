@@ -52,11 +52,43 @@ function selectReceiver(index) {
   let activeReceiver = oldReceivers[index];
   setLocalStorage("activeReceiver", { [index]: activeReceiver });
   document.querySelector("#receiverChatName").innerText = activeReceiver;
+  printChat()
 }
 function sendMessage() {
   let activeRec = getLocalStorage("activeReceiver");
+  let ind = Object.keys(activeRec)[0];
+  let oldchat = getLocalStorage("chats");
+  let chatData = oldchat[ind]?.length > 0 ? oldchat[ind] : [];
   let msgText = document.querySelector("#messageText");
-  console.log(activeRec, msgText);
+  let date = new Date();
+  chatData.push({
+    message: msgText.value,
+    created_at: date.toLocaleString(),
+  });
+  oldchat[ind] = chatData;
+  setLocalStorage("chats", oldchat);
+  printChat();
 }
 let sendButton = document.querySelector("#sendBtn");
 sendButton.addEventListener("click", sendMessage);
+
+// Print Message ///////
+function printChat() {
+  let activeRec = getLocalStorage("activeReceiver");
+  let ind = Object.keys(activeRec)[0];
+  let oldchat = getLocalStorage("chats");
+  let chatData = oldchat[ind]?.length > 0 ? oldchat[ind] : [];
+
+  let chatMessagesDiv = document.querySelector("#chatMessagesDiv");
+  chatMessagesDiv.innerHTML = "";
+  chatData.forEach((i) => {
+    let html = `
+      <div class="message sent">
+        <p class="p-0">${i.message}</p>
+        <p class="p-0">${i.created_at}</p>
+      </div>
+    `;
+    chatMessagesDiv.insertAdjacentHTML("beforeend", html);
+  });
+}
+printChat();

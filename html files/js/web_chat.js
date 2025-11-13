@@ -1,13 +1,20 @@
 import { getLocalStorage, setLocalStorage } from "./helper.js";
-
+let senderId = 1;
 let saveReceiverBtn = document.querySelector("#saveReceiver");
 let receiverInp = document.querySelector("#add_receiver");
+function checkSenderId() {
+  let url = new URLSearchParams(window.location.search);
+  if (url.get("sender")) {
+    senderId = url.get("sender");
+  }
+}
+checkSenderId();
 function addReceiver() {
   let oldReceivers = getLocalStorage("receivers");
   let receiverArr = oldReceivers ? oldReceivers : [];
-  receiverInp.value = "";
   receiverArr.push(receiverInp.value);
   setLocalStorage("receivers", receiverArr);
+  receiverInp.value = "";
   printReceivers();
 }
 saveReceiverBtn.addEventListener("click", addReceiver);
@@ -39,7 +46,6 @@ function printReceivers() {
   }
 }
 printReceivers();
-// document.addEventListener("load", printReceivers);
 function selectReceiver(index) {
   let chatListItems = document.querySelectorAll(".chat-item");
   chatListItems.forEach((chList) => {
@@ -52,13 +58,18 @@ function selectReceiver(index) {
   let activeReceiver = oldReceivers[index];
   setLocalStorage("activeReceiver", { [index]: activeReceiver });
   document.querySelector("#receiverChatName").innerText = activeReceiver;
-  printChat()
+  printChat();
 }
 function sendMessage() {
   let activeRec = getLocalStorage("activeReceiver");
   let ind = Object.keys(activeRec)[0];
-  let oldchat = getLocalStorage("chats");
-  let chatData = oldchat[ind]?.length > 0 ? oldchat[ind] : [];
+  let oldchat = getLocalStorage(senderId + "_chats")
+    ? getLocalStorage(senderId + "_chats")
+    : [];
+  let chatData = [];
+  if (oldchat?.hasOwnProperty(ind)) {
+    chatData = oldchat[ind]?.length > 0 ? oldchat[ind] : [];
+  }
   let msgText = document.querySelector("#messageText");
   let date = new Date();
   chatData.push({
@@ -66,7 +77,7 @@ function sendMessage() {
     created_at: date.toLocaleString(),
   });
   oldchat[ind] = chatData;
-  setLocalStorage("chats", oldchat);
+  setLocalStorage(senderId + "_chats", oldchat);
   printChat();
 }
 let sendButton = document.querySelector("#sendBtn");
@@ -76,19 +87,21 @@ sendButton.addEventListener("click", sendMessage);
 function printChat() {
   let activeRec = getLocalStorage("activeReceiver");
   let ind = Object.keys(activeRec)[0];
-  let oldchat = getLocalStorage("chats");
-  let chatData = oldchat[ind]?.length > 0 ? oldchat[ind] : [];
+  let oldchat = getLocalStorage(senderId + "_chats");
+  if (oldchat?.hasOwnProperty(ind)) {
+    let chatData = oldchat[ind]?.length > 0 ? oldchat[ind] : [];
 
-  let chatMessagesDiv = document.querySelector("#chatMessagesDiv");
-  chatMessagesDiv.innerHTML = "";
-  chatData.forEach((i) => {
-    let html = `
+    let chatMessagesDiv = document.querySelector("#chatMessagesDiv");
+    chatMessagesDiv.innerHTML = "";
+    chatData.forEach((i) => {
+      let html = `
       <div class="message sent">
         <p class="p-0">${i.message}</p>
         <p class="p-0">${i.created_at}</p>
       </div>
     `;
-    chatMessagesDiv.insertAdjacentHTML("beforeend", html);
-  });
+      chatMessagesDiv.insertAdjacentHTML("beforeend", html);
+    });
+  }
 }
 printChat();

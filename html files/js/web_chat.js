@@ -63,8 +63,8 @@ function selectReceiver(index) {
 function sendMessage() {
   let activeRec = getLocalStorage("activeReceiver");
   let ind = Object.keys(activeRec)[0];
-  let oldchat = getLocalStorage(senderId + "_chats")
-    ? getLocalStorage(senderId + "_chats")
+  let oldchat = getLocalStorage("chats")
+    ? getLocalStorage("chats")
     : [];
   let chatData = [];
   if (oldchat?.hasOwnProperty(ind)) {
@@ -75,19 +75,27 @@ function sendMessage() {
   chatData.push({
     message: msgText.value,
     created_at: date.toLocaleString(),
+    type: senderId === 1 ? 'sent' : 'received'
   });
   oldchat[ind] = chatData;
-  setLocalStorage(senderId + "_chats", oldchat);
+  setLocalStorage("chats", oldchat);
   printChat();
+  msgText.value = '';
 }
+
 let sendButton = document.querySelector("#sendBtn");
 sendButton.addEventListener("click", sendMessage);
-
+let msgText = document.querySelector("#messageText");
+msgText.addEventListener("keypress",function(e){
+  if(e.key == "Enter"){
+    sendMessage();
+  }
+});
 // Print Message ///////
 function printChat() {
   let activeRec = getLocalStorage("activeReceiver");
   let ind = Object.keys(activeRec)[0];
-  let oldchat = getLocalStorage(senderId + "_chats");
+  let oldchat = getLocalStorage("chats");
   if (oldchat?.hasOwnProperty(ind)) {
     let chatData = oldchat[ind]?.length > 0 ? oldchat[ind] : [];
 
@@ -95,7 +103,7 @@ function printChat() {
     chatMessagesDiv.innerHTML = "";
     chatData.forEach((i) => {
       let html = `
-      <div class="message sent">
+      <div class="message ${i.type}">
         <p class="p-0">${i.message}</p>
         <p class="p-0">${i.created_at}</p>
       </div>
@@ -103,5 +111,9 @@ function printChat() {
       chatMessagesDiv.insertAdjacentHTML("beforeend", html);
     });
   }
+  
 }
-printChat();
+// printChat();
+setInterval(()=>{
+  printChat()
+},2000)

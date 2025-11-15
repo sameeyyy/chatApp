@@ -101,9 +101,10 @@ function printChat() {
 
     let chatMessagesDiv = document.querySelector("#chatMessagesDiv");
     chatMessagesDiv.innerHTML = "";
-    chatData.forEach((i) => {
+    chatData.forEach((i, index) => {
       let html = `
       <div class="message ${i.type}">
+      <badge class="btn btn-danger delChats" data-index="${index}">Del</badge>
         <p class="p-0">${i.message}</p>
         <p class="p-0">${i.created_at}</p>
       </div>
@@ -114,6 +115,20 @@ function printChat() {
   
 }
 // printChat();
-setInterval(()=>{
-  printChat()
-},2000)
+// setInterval(()=>{
+//   printChat()
+// },2000);
+// 
+document.addEventListener('click', function(e){
+    let activeRec = getLocalStorage("activeReceiver");
+  let ind = Object.keys(activeRec)[0];
+  if(e.target.classList.contains('delChats')){
+    let index = e.target.getAttribute('data-index');
+    e.target.parentElement.remove();
+    let chatData = getLocalStorage('chats');
+    // chatData[0];
+    chatData[ind].splice(index, 1);
+    setLocalStorage('chats', chatData);
+  }
+});
+
